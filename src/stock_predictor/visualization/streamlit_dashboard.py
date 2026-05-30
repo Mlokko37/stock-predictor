@@ -7,6 +7,7 @@ import requests
 from datetime import datetime, timedelta
 from typing import Dict, List
 import numpy as np
+import os
 
 # Page configuration
 st.set_page_config(
@@ -42,8 +43,17 @@ st.title("🌍 Global Stock Price Predictor")
 st.markdown("### LSTM Neural Network - Multi-Market Predictions")
 st.markdown("---")
 
-# API endpoint
-API_URL = "http://127.0.0.1:8000"
+# API endpoint - Dynamic for local and production
+# Check if running on Render (production) or locally
+if os.getenv("RENDER"):
+    # Production on Render
+    API_URL = os.getenv("API_URL", "https://stock-predictor-nlg8.onrender.com")
+else:
+    # Local development
+    API_URL = "http://127.0.0.1:8000"
+
+# Show which API is being used (for debugging)
+st.sidebar.info(f"🔌 API: {API_URL}")
 
 # Sidebar
 with st.sidebar:
@@ -150,14 +160,14 @@ with st.sidebar:
     # API Status
     st.subheader("🔌 API Status")
     try:
-        response = requests.get(f"{API_URL}/health", timeout=2)
+        response = requests.get(f"{API_URL}/health", timeout=5)
         if response.status_code == 200:
-            st.success("✅ API Connected")
+            st.success(f"✅ API Connected ({API_URL})")
         else:
             st.error("❌ API Error")
     except:
         st.error("❌ API Not Connected")
-        st.info("Run: uvicorn src.stock_predictor.api.main:app --reload")
+        st.info(f"Make sure API is running at: {API_URL}")
 
 # Main content area
 if selected_symbol:
@@ -179,7 +189,7 @@ if selected_symbol:
             }
             
             try:
-                hist_response = requests.get(f"{API_URL}/predict/historical", params=params)
+                hist_response = requests.get(f"{API_URL}/predict/historical", params=params, timeout=30)
                 
                 if hist_response.status_code == 200:
                     hist_data = hist_response.json()
@@ -202,7 +212,8 @@ if selected_symbol:
                             
                             pred_response = requests.post(
                                 f"{API_URL}/predict/with_history",
-                                json=predict_payload
+                                json=predict_payload,
+                                timeout=30
                             )
                             
                             if pred_response.status_code == 200:
@@ -331,14 +342,18 @@ if selected_symbol:
                             else:
                                 st.error(f"Prediction API Error: {pred_response.status_code}")
                                 if pred_response.text:
-                                    st.json(pred_response.json())
+                                    try:
+                                        st.json(pred_response.json())
+                                    except:
+                                        st.text(pred_response.text)
                     else:
                         st.warning("Please select at least one prediction horizon")
                 else:
                     st.error(f"Historical data API Error: {hist_response.status_code}")
                     
             except requests.exceptions.ConnectionError:
-                st.error("❌ Cannot connect to API. Make sure the FastAPI server is running at http://127.0.0.1:8000")
+                st.error(f"❌ Cannot connect to API at {API_URL}")
+                st.info("Make sure the FastAPI server is running")
             except Exception as e:
                 st.error(f"Error: {str(e)}")
 
