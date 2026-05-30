@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-.env
 .venv/
 venv/
 ENV/
@@ -19,9 +18,8 @@ build/
 *.swp
 *.swo
 
-# Project specific
-models/
-data/
+# Project specific - DON'T ignore source code
+# Remove data/ from here since it contains source code
 logs/
 *.db
 *.sqlite
@@ -29,13 +27,24 @@ logs/
 .DS_Store
 *.log
 
+# Only ignore raw data cache, NOT source code
+data/raw/
+data/cache/
+!data/__init__.py
+!src/stock_predictor/data/
+
 # Environment
 .env.local
 .env.*.local
 .env
 .envrc
+
 # Jupyter Notebook
 .ipynb_checkpoints/
+
+# Model files (optional - keep if you want to track them)
+# models/final/*.h5
+# models/final/*.pkl
 
 # Misc
 *.bak   
