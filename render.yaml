@@ -1,0 +1,33 @@
+# render.yaml
+services:
+  # FastAPI Backend Service
+  - type: web
+    name: stock-predictor-api
+    runtime: python
+    repo: https://github.com/YOUR_USERNAME/stock-predictor
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.stock_predictor.api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: USE_MOCK_DATA
+        value: false
+      - key: YFINANCE_ENABLED
+        value: true
+
+  # Streamlit Dashboard Service
+  - type: web
+    name: stock-predictor-dashboard
+    runtime: python
+    repo: https://github.com/YOUR_USERNAME/stock-predictor
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run src/stock_predictor/visualization/streamlit_dashboard.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: API_URL
+        value: https://stock-predictor-api.onrender.com

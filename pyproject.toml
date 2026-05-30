@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stock_predictor"
+version = "0.1.0"
+description = "Stock price prediction using LSTM"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scikit-learn>=1.2",
+    "tensorflow>=2.13",
+    "fastapi>=0.100",
+    "uvicorn>=0.23",
+    "pyyaml>=6.0",
+    "pytest>=7.0"
+]

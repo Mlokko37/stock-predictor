@@ -1,0 +1,1 @@
+# Stock Predictor\n\nProfessional stock prediction project using LSTM.\n\n## Setup\n\n`ash\nmake install\n`\n\n## Usage\n\n`ash\nmake train\nmake serve\n`\n

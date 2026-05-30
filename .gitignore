@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv/
+venv/
+ENV/
+dist/
+build/
+*.egg-info/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+models/
+data/
+logs/
+*.db
+*.sqlite
+*.parquet
+.DS_Store
+*.log
+
+# Environment
+.env.local
+.env.*.local
+.env
+.envrc
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Misc
+*.bak   
+*.tmp
+*.backup
+z.txt
